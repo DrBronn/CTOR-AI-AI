@@ -1,10 +1,5 @@
 /* ============================================================
-   CTOR-MINIMAL v3 — GAME ENGINE (Variant A1)
-   - 10×10 toroidal board
-   - Up to 2 PUT per turn
-   - Up to 2 MOVE per turn
-   - autoEat after each operation
-   - Turn ends when limits exhausted
+   CTOR-MINIMAL v3 — GAME ENGINE (Fixed Turn Logic)
    ============================================================ */
 
 class CTORGame {
@@ -15,7 +10,7 @@ class CTORGame {
 
   reset() {
     this.board = this.makeEmptyBoard();
-    this.current = 'R';        // R starts
+    this.current = 'R';
     this.turn = 1;
     this.finished = false;
     this.winner = null;
@@ -45,18 +40,15 @@ class CTORGame {
 
     const moves = [];
 
-    // ----- PUT -----
+    // PUT
     if (this.opUsed.put < 2) {
-      for (let i = 0; i < this.N; i++) {
-        for (let j = 0; j < this.N; j++) {
-          if (this.board[i][j] === '.') {
+      for (let i = 0; i < this.N; i++)
+        for (let j = 0; j < this.N; j++)
+          if (this.board[i][j] === '.')
             moves.push({ type: "put", i, j });
-          }
-        }
-      }
     }
 
-    // ----- MOVE -----
+    // MOVE
     if (this.opUsed.move < 2) {
       for (let i = 0; i < this.N; i++) {
         for (let j = 0; j < this.N; j++) {
@@ -102,8 +94,8 @@ class CTORGame {
     // autoEat after each operation
     this.autoEat();
 
-    // check if turn ends
-    if (this.opUsed.put >= 2 && this.opUsed.move >= 2) {
+    // FIXED: end turn after 2 total operations
+    if (this.opUsed.put + this.opUsed.move >= 2) {
       this.endTurn();
     }
   }
@@ -121,7 +113,7 @@ class CTORGame {
   }
 
   /* ============================================================
-     AUTO-EAT (Toroidal 3×3 neighborhood)
+     AUTO-EAT
      ============================================================ */
 
   autoEat() {
@@ -130,17 +122,14 @@ class CTORGame {
     while (changed) {
       changed = false;
 
+      const ext = this.buildExtendedBoard();
+
       for (let i = 0; i < this.N; i++) {
         for (let j = 0; j < this.N; j++) {
 
           const cell = this.board[i][j];
 
-          // проверяем только фишки противника
           if (cell !== '.' && cell !== this.current) {
-
-            // ВАЖНО: пересчитываем расширенную доску перед каждой проверкой
-            const ext = this.buildExtendedBoard();
-
             const cnt = this.countNeighbors(i, j, this.current, ext);
 
             if (cnt >= 5) {
@@ -237,14 +226,14 @@ class CTORGame {
 
   getScore() {
     let r = 0, b = 0;
-    for (let i = 0; i < this.N; i++) {
+    for (let i = 0; i < this.N; i++)
       for (let j = 0; j < this.N; j++) {
         if (this.board[i][j] === 'R') r++;
         else if (this.board[i][j] === 'B') b++;
       }
-    }
     return [r, b];
   }
 }
 
 export { CTORGame };
+
