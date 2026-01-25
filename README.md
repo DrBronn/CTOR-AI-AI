@@ -1,113 +1,166 @@
-CTOR Tournament Engine — AI vs AI (ctor‑tournament‑fix3)
-Autonomous engine for AI‑vs‑AI competitions, bot benchmarking, and reproducible research.
+# CTOR Tournament — Modular Browser Edition
 
-This repository contains the stable tournament version of the CTOR platform, designed for running automated matches between AI agents. It is suitable for university courses, research labs, hackathons, and competitive AI development.
+This project is a modular, browser‑based platform for running, testing, and comparing AI bots in the abstract strategy game **CTOR**.  
+It is a complete refactor of the original single‑file prototype into a clean, maintainable, and extensible architecture.
 
-Features
-🧠 AI vs AI Autonomous Matches
-Fully automated game execution
+---
 
-Step-by-step and auto-play modes
+## 🚀 Features
 
-Deterministic engine for reproducible results
+- Full CTOR game engine (10×10 toroidal board, auto‑eat, 2 PUT + 2 MOVE per turn)
+- Built‑in bots (`random`, `greedy`)
+- Uploadable custom bots (`.js` files)
+- Interactive board visualization
+- Step‑by‑step and auto‑play modes
+- Clean ES‑module architecture
+- Easy to extend: new bots, new runners, new visualizations
 
-Unified API for custom bots
+---
 
-🏆 Tournament Architecture
-Clear separation of engine, visualization, and bot logic
+## 📁 Project Structure
 
-Batch execution for large-scale tournaments
+index.html
+core/
+game.js
+bots/
+builtins.js
+upload.js
+visual/
+boardView.js
+tournament/
+matchRunner.js
 
-Compatible with Swiss, Round‑Robin, and Knockout formats
+Code
 
-🔬 Research-Oriented Design
-Ideal for AI, algorithms, and game theory courses
+### Directory Overview
 
-Easy integration with JavaScript or Python bots
+| Directory | Purpose |
+|----------|---------|
+| **core/** | CTOR game engine (rules, moves, auto‑eat, scoring) |
+| **bots/** | Built‑in bots + user bot upload logic |
+| **visual/** | Board rendering and UI updates |
+| **tournament/** | Match control (start, step, auto, stop) |
+| **index.html** | UI layout + module wiring |
 
-Optional logging for move analysis and strategy evaluation
+---
 
-🖥 Minimal Visualization
-Lightweight 10×10 board view for debugging
+## 🧠 CTOR Game Rules (Summary)
 
-Can be disabled for headless tournament mode
+- Board: **10×10**, toroidal (wrap‑around edges)
+- Each turn a player may perform:
+  - up to **2 PUT** actions
+  - up to **2 MOVE** actions
+- After every action, **auto‑eat** is applied:
+  - if a piece is surrounded by ≥5 enemy neighbors in its 3×3 area, it flips
+- A turn ends when both PUT and MOVE limits are reached
+- The game ends when **both players have no legal moves**
+- Winner = player with the most pieces
 
-📁 Project Structure
+---
 
-/core/          – CTOR game engine
-/bots/          – example AI bots
-/visual/        – minimal visualization (10×10)
-/tournament/    – batch execution tools
+## 🤖 Adding Your Own Bot
 
-index.html      – local testing interface
-README.md       – documentation
-LICENSE         – MIT license
-.gitignore      – ignored files
+You can upload a custom bot via the UI.  
+The uploaded file must contain a function:
 
-Quick Start
-1. Clone the repository
-git clone https://github.com/DrBronn/CTOR-AI-AI.git
-cd CTOR-AI-AI
+```javascript
+function bot(board, player) {
+  // board: 10×10 array
+  // player: 'R' or 'B'
+  return { type: "...", ... };
+}
+Example: simplest possible bot
+javascript
+function bot(board, player) {
+  // always place on the first empty cell
+  for (let i = 0; i < 10; i++)
+    for (let j = 0; j < 10; j++)
+      if (board[i][j] === '.')
+        return { type: "put", i, j };
+}
+After uploading, the bot appears in:
 
-2. Run locally
-Open index.html in your browser.
+the bot selection dropdowns (Bot R / Bot B)
 
-3. Choose bots
-You can select:
+the “Available Bots” table
 
-built‑in bots
+🧩 Built‑In Bots
+Located in bots/builtins.js.
 
-your own bots placed in /bots/
+random
+Chooses a random legal move.
 
-4. Start a match
+greedy
+Simulates each legal move and chooses the one that maximizes the player's piece count.
+
+🎮 Running a Match
+In the UI:
+
+Select bots for R and B
+
+Click Start Match
+
 Use:
 
-Start — manual step-by-step mode
+Next Move — one bot action
 
-Auto Play — fully automated mode
+Auto Play — continuous play
 
-🤖 Creating Your Own Bot
-Each bot is a simple function:
+Stop — pause auto‑play
 
-function MyBot(board, player) {
-  // board  – current board state
-  // player – 'R' or 'B'
-  // return [i, j] – coordinates of the move
-}
+🛠 Extending the Platform
+Add a new built‑in bot
+Create:
 
-Add your bot file to /bots/ and register it in the Bots list.
+Code
+bots/myBot.js
+Export your bot:
 
-Engine API
+javascript
+export function myBot(board, player) { ... }
+Register it in builtins.js:
 
-game.place(i, j)       // make a move
-game.endTurn()         // end the current turn
-game.cloneBoard()      // get a copy of the board
-game.finished          // true if the game is over
-game.current           // current player ('R' or 'B')
+javascript
+import { myBot } from "./myBot.js";
+Bots.myBot = myBot;
+botSources.myBot = "built-in";
+Add a new tournament mode
+Create a new runner:
 
-Tournament Use
-The engine supports:
+Code
+tournament/myRunner.js
+Follow the structure of MatchRunner.
 
-autonomous batch execution
+Customize visualization
+Modify:
 
-headless mode
+Code
+visual/boardView.js
+🧑‍💻 Developer Notes
+Uses native ES modules (type="module")
 
-exporting match results
+No build tools required
 
-integration with Elo / Glicko rating systems
+Engine is UI‑agnostic and can run in Node.js  with small adjustments
 
-Suitable for:
+Ideal for:
 
-university courses
+AI competitions
 
-hackathons
+ML agent training
 
-research labs
+strategy research
 
-international AI competitions
+teaching game AI
 
-📄 License
-MIT License — free for educational, research, and commercial use.
+📜 License
+MIT License — free to use, modify, and distribute.
 
-📬 Contact
-For collaboration, academic use, or tournament integration, please contact the platform author.
+✨ Credits
+Modular architecture designed collaboratively by:
+
+Vladimir (CTOR GAME Inc) — project lead, architecture, integration
+
+Copilot — refactoring, modularization, documentation
+
+Contributions are welcome!
