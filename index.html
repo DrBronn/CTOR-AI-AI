@@ -5,231 +5,146 @@
 <title>CTOR Tournament — Modular Edition</title>
 
 <style>
-/* ===== Общий стиль страницы ===== */
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  background: #f5f5dc;
-  font-family: sans-serif;
-  padding: 20px;
-}
-
-/* ===== Панель управления ===== */
-#controls {
-  margin: 20px 0;
-  text-align: center;
-}
-
-button, select, input[type="file"] {
-  margin: 4px;
-  padding: 6px 10px;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-#status {
-  margin: 8px 0;
-  padding: 8px;
-  background: #e8f4fd;
-  border-radius: 5px;
-  font-size: 13px;
-  max-width: 600px;
-}
-
-/* ===== Таблица ботов ===== */
-#botTableContainer {
-  width: 300px;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid #aaa;
-  background: #faf7e8;
-  margin-top: 10px;
-  border-radius: 6px;
-}
-
-#botTable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-#botTable th, #botTable td {
-  border-bottom: 1px solid #ccc;
-  padding: 4px 6px;
-  text-align: left;
-}
-
-#botTable tr:nth-child(even) {
-  background: #f3efdd;
-}
-
-/* ===== Поле CTOR ===== */
-table#board {
-  border-collapse: collapse;
-  margin: 20px auto;
-  cursor: pointer;
-}
-
-#board td {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #666;
-  text-align: center;
-  vertical-align: middle;
-  background: #f7f3de;
-  padding: 0;
-  position: relative;
-}
-
-td.black::after,
-td.white::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border-radius: 50%;
-  box-shadow:
-    0 1px 1px rgba(0,0,0,0.8),
-    inset 0 2px 4px rgba(255,255,255,0.4),
-    inset 0 -2px 4px rgba(0,0,0,0.4);
-}
-
-td.black::after {
-  background: radial-gradient(circle at 30% 20%, #666, #111 70%, #000);
-}
-
-td.white::after {
-  background: radial-gradient(circle at 30% 20%, #ffffff, #d0d0d0 70%, #aaaaaa);
-}
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  td {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #999;
+    font-size: 20px;
+  }
+  .R { background: #222; color: white; }
+  .B { background: #eee; color: black; }
 </style>
 </head>
 
 <body>
 
-<!-- ===== Панель управления ===== -->
-<div id="controls">
+<h1>CTOR Tournament — Modular Edition</h1>
 
-  <div>
-    <label>Bot R:
-      <select id="botR"></select>
-    </label>
+<div>
+  <label>Bot R:</label>
+  <select id="botR"></select>
 
-    <label>Bot B:
-      <select id="botB"></select>
-    </label>
-  </div>
-
-  <div>
-    <input type="file" id="botUpload" accept=".js">
-    <button id="uploadBtn">Upload Bot</button>
-  </div>
-
-  <div style="margin-top:10px;">
-    <button id="startBtn">Start Match</button>
-    <button id="stepBtn">Next Move</button>
-    <button id="autoBtn">Auto Play</button>
-    <button id="stopBtn">Stop</button>
-  </div>
-
-  <div style="margin-top:10px;">
-    <label>Delay: </label>
-    <input id="delayInput" type="text" value="0.50" style="width:60px;"> sec
-  </div>
-
+  <label>Bot B:</label>
+  <select id="botB"></select>
 </div>
 
-<!-- ===== Таблица всех ботов ===== -->
+<div style="margin-top:10px;">
+  <button id="startBtn">Start Match</button>
+  <button id="stepBtn">Next Move</button>
+  <button id="autoBtn">Auto Play</button>
+  <button id="stopBtn">Stop</button>
+</div>
+
+<h3>Board</h3>
+<div id="boardContainer"></div>
+
+<h3>Upload Custom Bot</h3>
+<input type="file" id="botFile" accept=".js">
+
 <h3>Available Bots</h3>
-<div id="botTableContainer">
-  <table id="botTable">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Source</th>
-      </tr>
-    </thead>
-    <tbody id="botTableBody"></tbody>
-  </table>
-</div>
+<table id="botTable" border="1" cellpadding="5">
+  <thead>
+    <tr><th>Name</th><th>Source</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
-<!-- ===== Статус ===== -->
-<div id="status">Status: ready.</div>
-
-<!-- ===== Счёт ===== -->
-<div id="scoreBox">
-  Score: R = <span id="scoreR">0</span> |
-  B = <span id="scoreB">0</span>
-</div>
-
-<!-- ===== Поле CTOR ===== -->
-<table id="board"></table>
-
-<!-- ===== Подключение модулей ===== -->
+<!-- ============================================================
+     MODULE IMPORTS
+     ============================================================ -->
 <script type="module">
   import { Bots, botSources } from "./bots/builtins.js";
   import { setupBotUpload } from "./bots/upload.js";
   import { createBoardTable, updateBoardView } from "./visual/boardView.js";
   import { MatchRunner } from "./tournament/matchRunner.js";
 
-  const runner = new MatchRunner();
+  /* ------------------------------------------------------------
+     INITIAL SETUP
+     ------------------------------------------------------------ */
+  const boardContainer = document.getElementById("boardContainer");
+  const table = createBoardTable();
+  boardContainer.appendChild(table);
 
-  /* ===== UI Helpers ===== */
-  function addBotToSelect(name) {
-    const r = document.getElementById("botR");
-    const b = document.getElementById("botB");
+  const botRSelect = document.getElementById("botR");
+  const botBSelect = document.getElementById("botB");
+  const botTableBody = document.querySelector("#botTable tbody");
 
-    const opt1 = document.createElement("option");
-    opt1.value = name;
-    opt1.textContent = name;
-
-    const opt2 = opt1.cloneNode(true);
-
-    r.appendChild(opt1);
-    b.appendChild(opt2);
-  }
-
-  function refreshBotTable() {
-    const body = document.getElementById("botTableBody");
-    body.innerHTML = "";
-
+  function refreshBotSelectors() {
+    botRSelect.innerHTML = "";
+    botBSelect.innerHTML = "";
     for (const name in Bots) {
-      const tr = document.createElement("tr");
+      const opt1 = document.createElement("option");
+      opt1.value = name;
+      opt1.textContent = name;
+      botRSelect.appendChild(opt1);
 
-      const tdName = document.createElement("td");
-      tdName.textContent = name;
-
-      const tdSource = document.createElement("td");
-      tdSource.textContent = botSources[name] || "unknown";
-
-      tr.appendChild(tdName);
-      tr.appendChild(tdSource);
-      body.appendChild(tr);
+      const opt2 = document.createElement("option");
+      opt2.value = name;
+      opt2.textContent = name;
+      botBSelect.appendChild(opt2);
     }
   }
 
-  /* ===== Инициализация ===== */
-  function init() {
-    addBotToSelect("random");
-    addBotToSelect("greedy");
-
-    refreshBotTable();
-    createBoardTable(runner.game);
-    updateBoardView(runner.game);
-
-    setupBotUpload(addBotToSelect, refreshBotTable);
+  function refreshBotTable() {
+    botTableBody.innerHTML = "";
+    for (const name in Bots) {
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      const td2 = document.createElement("td");
+      td1.textContent = name;
+      td2.textContent = botSources[name] || "unknown";
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      botTableBody.appendChild(tr);
+    }
   }
 
-  init();
+  refreshBotSelectors();
+  refreshBotTable();
 
-  /* ===== Привязка кнопок ===== */
-  document.getElementById("startBtn").onclick = () => runner.start();
-  document.getElementById("stepBtn").onclick  = () => runner.step();
-  document.getElementById("autoBtn").onclick  = () => runner.autoPlay();
-  document.getElementById("stopBtn").onclick  = () => runner.stop();
+  setupBotUpload(() => {
+    refreshBotSelectors();
+    refreshBotTable();
+  });
+
+  /* ------------------------------------------------------------
+     MATCH RUNNER
+     ------------------------------------------------------------ */
+  let runner = null;
+
+  document.getElementById("startBtn").onclick = () => {
+    runner = new MatchRunner(
+      Bots,
+      botSources,
+      botRSelect.value,
+      botBSelect.value,
+      (board) => updateBoardView(table, board)
+    );
+    runner.start();
+  };
+
+  document.getElementById("stepBtn").onclick = () => {
+    if (runner) runner.step();
+  };
+
+  document.getElementById("autoBtn").onclick = () => {
+    if (runner) runner.autoPlay();
+  };
+
+  document.getElementById("stopBtn").onclick = () => {
+    if (runner) runner.stop();
+  };
 </script>
 
 </body>
 </html>
-
 
