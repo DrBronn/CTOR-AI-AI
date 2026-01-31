@@ -1,0 +1,151 @@
+README — CTOR GAME: AI vs AI Edition
+A minimal, stable platform for developing and testing AI bots
+
+The CTOR GAME AI vs AI Edition is a compact, fully functional platform where two artificial intelligence agents compete on the CTOR board.
+This version is intentionally implemented as a single self‑contained HTML file, making it easy to use, share, and extend without dealing with module loaders or complex project structures.
+
+It is designed for:
+
+students learning AI decision‑making,
+
+researchers experimenting with strategies,
+
+developers building custom CTOR bots,
+
+anyone who wants a clean, reproducible environment for testing algorithms.
+
+🎮 Platform Features
+Complete CTOR GAME engine
+
+Visual 8×8 board
+
+Step‑by‑step execution
+
+Automatic play mode
+
+Built‑in bots
+
+Uploading custom bots (.js files)
+
+Move validation and win detection
+
+Simple and stable API for writing bots
+
+Everything runs directly in the browser.
+
+🧠 How a CTOR Bot Works
+A bot is simply a JavaScript function that receives:
+
+the current board state,
+
+the bot’s color ("R" or "B"),
+
+the move history,
+
+optional helper functions.
+
+It must return a move:
+
+js
+{ row: Number, col: Number }
+A minimal bot looks like this:
+
+js
+function myBot(board, color) {
+  return { row: 0, col: 0 };
+}
+🛠 How to Write Your Own Bot
+1. Create a file named myBot.js
+Example:
+
+js
+export function myBot(board, color) {
+  // Find the first empty cell
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (board[r][c] === ".") {
+        return { row: r, col: c };
+      }
+    }
+  }
+  return null; // no moves available
+}
+2. Make sure the function is exported
+The platform expects:
+
+Code
+export function myBot(...)
+3. Save the file as myBot.js
+🧪 How to Test Your Bot on the Platform
+Open the CTOR GAME AI vs AI page (GitHub Pages).
+
+Scroll to Upload Custom Bot.
+
+Click Choose File and select your myBot.js.
+
+Your bot will appear in the Available Bots list.
+
+Select it as Bot R or Bot B.
+
+Press Start Match.
+
+Use:
+
+Next Move — step-by-step mode
+
+Auto Play — continuous mode
+
+Stop — pause the match
+
+📂 Project Structure (Base Version)
+Code
+index.html   ← complete engine, UI, and logic in one file
+README.md    ← this document
+This version is intentionally monolithic for simplicity and reliability.
+
+📘 Bot API Specification
+Your bot receives:
+
+Parameter	Description
+board	8×8 matrix containing "R", "B", or "."
+color	"R" or "B"
+history	list of previous moves
+helpers	optional helper functions
+Your bot must return:
+
+js
+{ row: Number, col: Number }
+If the bot returns an illegal move, it automatically loses.
+
+🧩 Example of a More Advanced Bot
+js
+export function greedyBot(board, color) {
+  let best = null;
+  let bestScore = -1;
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      if (board[r][c] !== ".") continue;
+
+      const score = evaluateMove(board, r, c, color);
+      if (score > bestScore) {
+        bestScore = score;
+        best = { row: r, col: c };
+      }
+    }
+  }
+
+  return best || null;
+}
+🎓 Guidelines for Students
+Start with a simple bot.
+
+Add strategy gradually.
+
+Test against built‑in bots.
+
+Analyze losing positions.
+
+Try different heuristics.
+
+Experiment freely — the platform is safe and deterministic
