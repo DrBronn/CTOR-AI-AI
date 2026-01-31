@@ -1,63 +1,60 @@
-README — CTOR GAME: AI vs AI Edition
-A minimal, stable platform for developing and testing AI bots
+CTOR GAME — AI vs AI Edition
+A compact, stable platform for developing and testing AI bots
 
-The CTOR GAME AI vs AI Edition is a compact, fully functional platform where two artificial intelligence agents compete on the CTOR board.
-This version is intentionally implemented as a single self‑contained HTML file, making it easy to use, share, and extend without dealing with module loaders or complex project structures.
+The CTOR GAME AI vs AI Edition is a lightweight, browser‑based environment where two AI agents compete on an 8×8 CTOR board.
+This version is intentionally implemented as a single self‑contained HTML file, making it easy to use, share, and extend.
 
-It is designed for:
+It is ideal for:
 
-students learning AI decision‑making,
+🧑‍🎓 Students learning AI decision‑making
 
-researchers experimenting with strategies,
+🧪 Researchers experimenting with strategies
 
-developers building custom CTOR bots,
+🧠 Developers building custom CTOR bots
 
-anyone who wants a clean, reproducible environment for testing algorithms.
+🎯 Anyone who wants a reproducible testing environment
 
-🎮 Platform Features
-Complete CTOR GAME engine
+🚀 Platform Features
+✔️ Full CTOR GAME engine
 
-Visual 8×8 board
+✔️ Visual 8×8 board
 
-Step‑by‑step execution
+✔️ Step‑by‑step execution
 
-Automatic play mode
+✔️ Automatic play mode
 
-Built‑in bots
+✔️ Built‑in bots
 
-Uploading custom bots (.js files)
+✔️ Uploading custom bots (.js)
 
-Move validation and win detection
+✔️ Move validation & win detection
 
-Simple and stable API for writing bots
+✔️ Simple API for writing bots
 
-Everything runs directly in the browser.
+Everything runs directly in the browser — no installation required.
 
-🧠 How a CTOR Bot Works
-A bot is simply a JavaScript function that receives:
+🧠 How CTOR Bots Work
+A bot is a JavaScript function that receives:
 
-the current board state,
+the current board
 
-the bot’s color ("R" or "B"),
+the bot’s color ("R" or "B")
 
-the move history,
+the move history
 
-optional helper functions.
+optional helper functions
 
 It must return a move:
 
 js
 { row: Number, col: Number }
-A minimal bot looks like this:
-
+🟦 Minimal bot example
 js
-function myBot(board, color) {
+export function myBot(board, color) {
   return { row: 0, col: 0 };
 }
 🛠 How to Write Your Own Bot
-1. Create a file named myBot.js
-Example:
-
+1️⃣ Create a file named myBot.js
 js
 export function myBot(board, color) {
   // Find the first empty cell
@@ -70,54 +67,47 @@ export function myBot(board, color) {
   }
   return null; // no moves available
 }
-2. Make sure the function is exported
+2️⃣ Ensure the function is exported
 The platform expects:
 
 Code
 export function myBot(...)
-3. Save the file as myBot.js
-🧪 How to Test Your Bot on the Platform
+3️⃣ Save the file as myBot.js
+🧪 How to Test Your Bot
 Open the CTOR GAME AI vs AI page (GitHub Pages).
 
 Scroll to Upload Custom Bot.
 
-Click Choose File and select your myBot.js.
+Click Choose File → select your myBot.js.
 
-Your bot will appear in the Available Bots list.
+Your bot appears in Available Bots.
 
 Select it as Bot R or Bot B.
 
 Press Start Match.
 
-Use:
+Use the controls:
 
-Next Move — step-by-step mode
-
-Auto Play — continuous mode
-
-Stop — pause the match
-
-📂 Project Structure (Base Version)
-Code
-index.html   ← complete engine, UI, and logic in one file
-README.md    ← this document
-This version is intentionally monolithic for simplicity and reliability.
-
+Button	Function
+▶️ Start Match	Start a new game
+⏭ Next Move	Step-by-step execution
+🔁 Auto Play	Continuous play
+⏹ Stop	Pause the match
 📘 Bot API Specification
 Your bot receives:
 
-Parameter	Description
-board	8×8 matrix containing "R", "B", or "."
-color	"R" or "B"
-history	list of previous moves
-helpers	optional helper functions
+Parameter	Type	Description
+board	string[8][8]	8×8 matrix containing "R", "B", or "."
+color	"R" or "B"	Your bot’s color
+history	Array	List of previous moves
+helpers	Object	Optional helper functions
 Your bot must return:
 
 js
 { row: Number, col: Number }
-If the bot returns an illegal move, it automatically loses.
+If the bot returns an illegal move → it loses automatically.
 
-🧩 Example of a More Advanced Bot
+🧩 Example: A Greedy Bot
 js
 export function greedyBot(board, color) {
   let best = null;
@@ -137,15 +127,34 @@ export function greedyBot(board, color) {
 
   return best || null;
 }
+📂 Project Structure (Base Version)
+Code
+index.html   ← complete engine, UI, and logic in one file
+README.md    ← this document
+This version is intentionally monolithic for simplicity and reliability.
+
 🎓 Guidelines for Students
-Start with a simple bot.
+Start with a simple bot
 
-Add strategy gradually.
+Add strategy gradually
 
-Test against built‑in bots.
+Test against built‑in bots
 
-Analyze losing positions.
+Analyze losing positions
 
-Try different heuristics.
+Try different heuristics
 
-Experiment freely — the platform is safe and deterministic
+Experiment freely — the platform is deterministic
+
+🧾 About CTOR GAME
+CTOR GAME is an educational environment designed to help students explore:
+
+algorithmic thinking
+
+game strategy
+
+AI decision‑making
+
+reproducible experimentation
+
+The platform is intentionally simple, transparent, and easy to extend.
