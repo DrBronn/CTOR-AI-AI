@@ -1,160 +1,130 @@
-CTOR GAME — AI vs AI Edition
-A compact, stable platform for developing and testing AI bots
+```
+   ██████╗████████╗ ██████╗ ██████╗      ██████╗  █████╗ ███╗   ███╗███████╗
+  ██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝
+  ██║        ██║   ██║   ██║██████╔╝    ██║  ███╗███████║██╔████╔██║█████╗  
+  ██║        ██║   ██║   ██║██╔══██╗    ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝  
+  ╚██████╗   ██║   ╚██████╔╝██║  ██║    ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗
+   ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝
+```
 
-The CTOR GAME AI vs AI Edition is a lightweight, browser‑based environment where two AI agents compete on an 8×8 CTOR board.
-This version is intentionally implemented as a single self‑contained HTML file, making it easy to use, share, and extend.
+# 🎮 **CTOR GAME — AI vs AI Platform**
+*A minimal, browser‑based environment for developing and testing CTOR bots.*
 
-It is ideal for:
+---
 
-🧑‍🎓 Students learning AI decision‑making
+## 🚀 Features
 
-🧪 Researchers experimenting with strategies
+- 🧠 Full CTOR GAME engine  
+- 🎨 Visual 8×8 board  
+- ▶️ Step‑by‑step and auto‑play modes  
+- 🤖 Built‑in bots  
+- 📤 Upload your own bots (`.js` files)  
+- ✔️ Move validation & win detection  
+- 🧩 Simple API for writing bots  
+- 📁 Example bots included  
 
-🧠 Developers building custom CTOR bots
+---
 
-🎯 Anyone who wants a reproducible testing environment
+## 📥 Run the Platform Locally
 
-🚀 Platform Features
-✔️ Full CTOR GAME engine
+1. Download or clone this repository.  
+2. Open **`index.html`** in any modern browser.  
+3. The platform loads instantly — no server required.
 
-✔️ Visual 8×8 board
+---
 
-✔️ Step‑by‑step execution
+## 🧠 Bot API Overview
 
-✔️ Automatic play mode
+A CTOR bot is a JavaScript function:
 
-✔️ Built‑in bots
-
-✔️ Uploading custom bots (.js)
-
-✔️ Move validation & win detection
-
-✔️ Simple API for writing bots
-
-Everything runs directly in the browser — no installation required.
-
-🧠 How CTOR Bots Work
-A bot is a JavaScript function that receives:
-
-the current board
-
-the bot’s color ("R" or "B")
-
-the move history
-
-optional helper functions
-
-It must return a move:
-
-js
-{ row: Number, col: Number }
-🟦 Minimal bot example
-js
+```js
 export function myBot(board, color) {
-  return { row: 0, col: 0 };
+  return { row: Number, col: Number };
 }
-🛠 How to Write Your Own Bot
-1️⃣ Create a file named myBot.js
-js
-export function myBot(board, color) {
-  // Find the first empty cell
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      if (board[r][c] === ".") {
-        return { row: r, col: c };
-      }
-    }
-  }
-  return null; // no moves available
-}
-2️⃣ Ensure the function is exported
-The platform expects:
+```
 
-Code
-export function myBot(...)
-3️⃣ Save the file as myBot.js
-🧪 How to Test Your Bot
-Open the CTOR GAME AI vs AI page (GitHub Pages).
+Where:
 
-Scroll to Upload Custom Bot.
+| Parameter | Description |
+|----------|-------------|
+| `board` | 8×8 array with `"R"`, `"B"`, `"."` |
+| `color` | `"R"` or `"B"` |
+| return | `{ row, col }` — your chosen move |
 
-Click Choose File → select your myBot.js.
-
-Your bot appears in Available Bots.
-
-Select it as Bot R or Bot B.
-
-Press Start Match.
-
-Use the controls:
-
-Button	Function
-▶️ Start Match	Start a new game
-⏭ Next Move	Step-by-step execution
-🔁 Auto Play	Continuous play
-⏹ Stop	Pause the match
-📘 Bot API Specification
-Your bot receives:
-
-Parameter	Type	Description
-board	string[8][8]	8×8 matrix containing "R", "B", or "."
-color	"R" or "B"	Your bot’s color
-history	Array	List of previous moves
-helpers	Object	Optional helper functions
-Your bot must return:
-
-js
-{ row: Number, col: Number }
 If the bot returns an illegal move → it loses automatically.
 
-🧩 Example: A Greedy Bot
-js
-export function greedyBot(board, color) {
-  let best = null;
-  let bestScore = -1;
+---
 
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      if (board[r][c] !== ".") continue;
+## 📁 Repository Structure
 
-      const score = evaluateMove(board, r, c, color);
-      if (score > bestScore) {
-        bestScore = score;
-        best = { row: r, col: c };
-      }
-    }
-  }
+```
+CTOR-AI-AI/
+│
+├── index.html
+├── README.md
+├── CTOR_GAME_Student_Assignments.md
+├── LICENSE
+│
+└── examples/
+    ├── myBot_template.js
+    ├── randomBot.js
+    ├── greedyBot.js
+    └── README_examples.md
+```
 
-  return best || null;
-}
-📂 Project Structure (Base Version)
-Code
-index.html   ← complete engine, UI, and logic in one file
-README.md    ← this document
-This version is intentionally monolithic for simplicity and reliability.
+---
 
-🎓 Guidelines for Students
-Start with a simple bot
+## 🎓 Student Assignments
 
-Add strategy gradually
+All tasks are described here:
 
-Test against built‑in bots
+👉 **[CTOR_GAME_Student_Assignments.md](CTOR_GAME_Student_Assignments.md)**
 
-Analyze losing positions
+Students must complete:
 
-Try different heuristics
+1. Test the platform locally  
+2. Create an AI‑generated heuristic bot  
+3. Implement a manual JavaScript bot  
 
-Experiment freely — the platform is deterministic
+---
 
-🧾 About CTOR GAME
-CTOR GAME is an educational environment designed to help students explore:
+## 🧩 Example Bots
 
-algorithmic thinking
+Located in the `examples/` folder:
 
-game strategy
+| Bot | Description |
+|-----|-------------|
+| `myBot_template.js` | Fully commented starter template |
+| `randomBot.js` | Random legal move |
+| `greedyBot.js` | Move with maximum capture score |
+| `README_examples.md` | Documentation for all examples |
 
-AI decision‑making
+---
 
-reproducible experimentation
+## 🛠 Uploading Your Bot
 
-The platform is intentionally simple, transparent, and easy to extend.
+1. Open `index.html`  
+2. Scroll to **Upload Custom Bot**  
+3. Select your `.js` file  
+4. Choose it as Bot R or Bot B  
+5. Start a match  
+
+---
+
+## 🤝 Contributing
+
+We welcome:
+
+- bug reports  
+- new bots  
+- heuristic strategies  
+- documentation improvements  
+
+Accepted bots will be added to the repository.
+
+---
+
+## 📄 License
+
+Released under the MIT License.
+
